@@ -79,3 +79,18 @@ function run_drd() {
 }
 
 run_drd();
+
+// phpcs:disabled
+
+add_action( 'wp_ajax_foobar', 'foobar' );
+add_action( 'wp_ajax_nopriv_foobar', 'foobar' );
+
+function foobar() {
+	if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'my-nonce' ) ) {
+		wp_send_json_error( 'Invalid Error' );
+		wp_die();
+	}
+
+	echo 'Hello, World';
+	wp_die();
+}
