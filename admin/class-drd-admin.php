@@ -103,4 +103,71 @@ class Drd_Admin {
 			)
 		);
 	}
+
+	/**
+	 * The function initializes all the meta boxes on admin screen.
+	 *
+	 * @return void
+	 */
+	public function meta_box_init() {
+		$screens = array( 'post', 'wholesale-applicatio' );
+
+		foreach ( $screens as $screen ) {
+			add_meta_box(
+				'wholesale_customer_reg_action',
+				__( 'Action', 'drd' ),
+				array( $this, 'wholesale_customer_red_action' ),
+				$screen,
+				'side',
+			);
+		}
+	}
+
+	/**
+	 * Wholesale customer registration actions
+	 *
+	 * @return void
+	 */
+	public function wholesale_customer_red_action() {
+		?>
+		<p>Status: <strong>Pending</strong></p>
+		<a href="#" class="drd-plugin-btn button button-primary">Approve</a>
+		<a href="#" class="button button-primary">Reject</a>
+		<?php
+	}
+
+	/**
+	 * Undocumented function
+	 *
+	 * @return void
+	 */
+	public function foobar() {
+		if ( ! check_ajax_referer( 'my-nonce', 'nonce', false ) ) {
+			wp_send_json_error( 'Invalid nonce' );
+		}
+
+		$post_id = isset( $_POST['post_id'] ) ? sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) : null;
+		$post_id = intval( $post_id );
+
+		if ( ! $post_id || ! is_numeric( $post_id ) ) {
+			wp_send_json_error( array( 'message' => 'Invalid Post ID' ), 400 );
+		}
+
+		$user_data = isset( $_POST['user_data'] ) ? $_POST['user_data'] : null; //phpcs:ignore
+
+		if ( ! $user_data ) {
+			wp_send_json_error( array( 'message' => 'Invalid User Data' ) );
+		}
+
+		$user_data_array_key = array_keys( $user_data );
+		$sanitized_user_data = array();
+
+		foreach ( $user_data_array_key as $user_data_key ) {
+			$sanitized_user_data[ $user_data_key ] = sanitize_text_field( wp_unslash( $user_data[ $user_data_key ] ) );
+		}
+
+		wp_send_json_success( array( 'message' => 'Successfully received data' ) );
+
+		wp_die();
+	}
 }
