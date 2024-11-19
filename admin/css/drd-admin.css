@@ -2,3 +2,20 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.drd-wholesale-customer-meta-data {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+ .drd-wholesale-customer-meta-data table {
+    text-align: left;
+    margin-top: 20px;
+    margin-bottom: 20px;
+ }
+
+ .drd-wholesale-customer-meta-data table th {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 50px;
+ }

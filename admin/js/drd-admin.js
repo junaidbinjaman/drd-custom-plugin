@@ -3,12 +3,13 @@
 
     $(function () {
         fooBar($);
+        yoo($);
     });
 })(jQuery);
 
 function fooBar($) {
     $('.drd-plugin-btn').on('click', function () {
-        const urlObj = new URL(window.location.href)
+        const urlObj = new URL(window.location.href);
         const postId = urlObj.searchParams.get('post');
 
         const userData = {
@@ -30,9 +31,11 @@ function fooBar($) {
             practitioner_type: jQuery('#practitioner_type').val(),
             title: jQuery('#title').val(),
             website: jQuery('#website').val(),
-            tell_us_about_your_practice: jQuery('#tell_us_about_your_practice').val(),
-            notes: jQuery('#notes').val()
-        }
+            tell_us_about_your_practice: jQuery(
+                '#tell_us_about_your_practice'
+            ).val(),
+            notes: jQuery('#notes').val(),
+        };
 
         $.ajax({
             type: 'POST',
@@ -41,7 +44,7 @@ function fooBar($) {
                 action: 'foobar',
                 nonce: ajax_object.nonce,
                 post_id: postId,
-                user_data: userData
+                user_data: userData,
             },
             success: function (res) {
                 console.log(res);
@@ -52,3 +55,23 @@ function fooBar($) {
         });
     });
 }
+
+function yoo($) {
+    $('.yoo').on('click', function () {
+        $.ajax({
+            type: 'POST',
+            url: ajax_object.ajax_url,
+            data: {
+                action: 'yoo',
+                user_id: 9,
+            },
+            success: function (res) {
+                console.log(res);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            },
+        });
+    });
+}
+
