@@ -40,6 +40,55 @@ class Drd_Admin {
 	private $version;
 
 	/**
+	 * The custom meta keys and field labels of wholesale customer account.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $version    The current version of this plugin.
+	 */
+	private $wholesale_customer_custom_meta_keys = array(
+		array(
+			'key'        => 'seller_permit',
+			'label'      => 'Seller\'s Permit',
+			'input_type' => 'text',
+		),
+		array(
+			'key'        => 'practitioner_type',
+			'label'      => 'Practitioner Type',
+			'input_type' => 'text',
+		),
+		array(
+			'key'        => 'title',
+			'label'      => 'Title',
+			'input_type' => 'text',
+		),
+		array(
+			'key'        => 'website',
+			'label'      => 'Website',
+			'input_type' => 'text',
+		),
+		array(
+			'key'        => 'tell_us_about_your_practice',
+			'label'      => 'Tell Us ABout Your Practice',
+			'input_type' => 'textarea',
+		),
+		array(
+			'key'        => 'wholesale_customer_notes',
+			'label'      => 'Notes',
+			'input_type' => 'textarea',
+		),
+	);
+
+	/**
+	 * The current user id.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      int    $user_id The current user id.
+	 */
+	private $user_id;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -50,6 +99,17 @@ class Drd_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
+
+		add_action( 'admin_init', array( $this, 'get_user_id' ) );
+	}
+
+	/**
+	 * The function extracts the current user id.
+	 *
+	 * @return void
+	 */
+	public function get_user_id() {
+		$this->user_id = get_current_user_id();
 	}
 
 	/**
@@ -131,8 +191,26 @@ class Drd_Admin {
 	public function wholesale_customer_red_action() {
 		?>
 		<p>Status: <strong>Pending</strong></p>
-		<a href="#" class="drd-plugin-btn button button-primary">Approve</a>
-		<a href="#" class="button button-primary">Reject</a>
+		<a href="#" class="drd-application-approval-btn button button-primary">Approve</a>
+		<a href="#" class="drd-application-rejection-btn button button-primary">Reject</a>
+		<div class="gggg">
+		<div class="ggg">
+			<span class="loader"></span>
+			<p class="drd-approving-message">Approving the account application.</p>
+
+			<div class="drd-approved-message">
+				<p>The application has been approved.</p>
+				<small>Deleting the application and redirecting to user account!</small>
+			</div>
+
+			<div class="drd-rejected-message">
+				<p>The application has been rejected.</p>
+				<small>Deleting the application and redirecting to all application page.</small>
+			</div>
+			
+			<h3>Please wait...</h3>
+		</div>
+		</div>
 		<?php
 	}
 
@@ -166,9 +244,14 @@ class Drd_Admin {
 			$sanitized_user_data[ $user_data_key ] = sanitize_text_field( wp_unslash( $user_data[ $user_data_key ] ) );
 		}
 
-		$this->register_user();
+		$user_id = $this->register_user( $sanitized_user_data );
 
-		wp_send_json_success( array( 'message' => 'Successfully received data' ) );
+		wp_send_json_success(
+			array(
+				'message' => 'Successfully received data',
+				'user_id' => $user_id,
+			)
+		);
 
 		wp_die();
 	}
@@ -176,49 +259,59 @@ class Drd_Admin {
 	/**
 	 * The function register the user
 	 *
-	 * @return void
+	 * @param array $sanitized_user_data The sanitized user data.
+	 * @return int
 	 */
-	public function register_user() {
+	public function register_user( $sanitized_user_data ) {
+
 		$user_data = array(
-			'user_nicename' => 'ersome',
-			'display_name'  => 'Ersome Rego',
-			'nickname'      => 'ersome',
-			'first_name'    => 'Ersome',
-			'last_name'     => 'Rego',
+			'user_nicename' => $sanitized_user_data['first_name'],
+			'display_name'  => $sanitized_user_data['first_name'] . $sanitized_user_data['lastName'],
+			'nickname'      => $sanitized_user_data['first_name'],
+			'first_name'    => $sanitized_user_data['first_name'],
+			'last_name'     => $sanitized_user_data['last_name'],
 			'role'          => 'wholesale_customer',
-			'user_login'    => 'example',
+			'user_login'    => $sanitized_user_data['first_name'],
 			'user_pass'     => 'jwolt65859j',
-			'user_email'    => 'example65859@gmail.com',
+			'user_email'    => $sanitized_user_data['email'],
 			'meta_input'    => array(
-				'seller_permit'               => 'Permitted Seller',
-				'practitioner_type'           => 'Practitioner types',
-				'title'                       => 'Title',
-				'website'                     => 'Website',
-				'tell_us_about_your_practice' => 'About your practice',
-				'notes'                       => 'Notes',
-				'country'                     => 'Bangladesh',
-				'billing_first_name'          => 'Billing Ersome',
-				'billing_last_name'           => 'Billing Rego',
-				'billing_address_1'           => 'House #35, Road 6, Block F, Banasree,',
-				'billing_address_2'           => 'Dhaka Bangladesh.',
-				'billing_country'             => 'Bangladesh',
-				'billing_city'                => 'Dhaka',
-				'billing_postcode'            => '1230',
-				'billing_phone'               => '01705294083',
-				'billing_email'               => 'example65859@gmail.com',
-				'shipping_first_name'         => 'Shipping Ersome',
-				'shipping_last_name'          => 'Shipping Rego',
-				'shipping_company'            => 'Shipping Company',
-				'shipping_address_1'          => 'Shipping Address',
-				'shipping_address_2'          => 'Shipping Address 2',
-				'shipping_city'               => 'Shipping Dhaka',
-				'shipping_postcode'           => '1229',
-				'shipping_country'            => 'Bangladesh',
-				'shipping_phone'              => '00117733',
+				'seller_permit'               => $sanitized_user_data['sellers_permit'],
+				'practitioner_type'           => $sanitized_user_data['practitioner_type'],
+				'title'                       => $sanitized_user_data['title'],
+				'wholesale_customer_notes'    => $sanitized_user_data['wholesale_customer_notes'],
+				'tell_us_about_your_practice' => $sanitized_user_data['tell_us_about_your_practice'],
+				'country'                     => $sanitized_user_data['country'],
+				'website'                     => $sanitized_user_data['website'],
+				'billing_first_name'          => $sanitized_user_data['first_name'],
+				'billing_last_name'           => $sanitized_user_data['last_name'],
+				'billing_address_1'           => $sanitized_user_data['billing_address_line_1'],
+				'billing_address_2'           => $sanitized_user_data['billing_address_line_2'],
+				'billing_state'               => $sanitized_user_data['billing_country'],
+				'billing_city'                => $sanitized_user_data['billing_city'],
+				'billing_postcode'            => $sanitized_user_data['billing_postal_code'],
+				'billing_phone'               => $sanitized_user_data['phone'],
+				'billing_email'               => $sanitized_user_data['email'],
+				'shipping_first_name'         => $sanitized_user_data['first_name'],
+				'shipping_last_name'          => $sanitized_user_data['last_name'],
+				'shipping_address_1'          => $sanitized_user_data['shipping_address_line_1'],
+				'shipping_address_2'          => $sanitized_user_data['shipping_address_line_2'],
+				'shipping_city'               => $sanitized_user_data['shipping_city'],
+				'shipping_postcode'           => $sanitized_user_data['shipping_postal_code'],
+				'shipping_country'            => $sanitized_user_data['shipping_country'],
 			),
 		);
 
-		wp_insert_user( $user_data );
+		// The newly created user is or WP_Error is the user creation is not successful.
+		$user_id = wp_insert_user( $user_data );
+
+		if ( is_wp_error( $user_id ) ) {
+			wp_send_json_error( 'The user is not created' );
+			return;
+		}
+
+		$this->notify_wholesale_approval( $user_data['user_email'], $user_data['user_pass'] );
+
+		return $user_id;
 	}
 
 	/**
@@ -226,7 +319,7 @@ class Drd_Admin {
 	 *
 	 * @return void
 	 */
-	public function user_meta_html() {
+	public function update_custom_user_meta_on_profile_html() {
 		$user_id = $_GET['user_id']; //phpcs:ignore;
 
 		if ( ! isset( $user_id ) ) {
@@ -236,125 +329,152 @@ class Drd_Admin {
 		$user_id = sanitize_text_field( $user_id );
 		$user_id = esc_html( $user_id );
 
-		$seller_permit               = get_user_meta( $user_id, 'seller_permit', true );
-		$practitioner_type           = get_user_meta( $user_id, 'practitioner_type', true );
-		$title                       = get_user_meta( $user_id, 'title', true );
-		$website                     = get_user_meta( $user_id, 'website', true );
-		$tell_us_about_your_practice = get_user_meta( $user_id, 'tell_us_about_your_practice', true );
-		$notes                       = get_user_meta( $user_id, 'notes', true );
-		$country                     = get_user_meta( $user_id, 'country', true );
+		$meta_data = array();
+
+		foreach ( $this->wholesale_customer_custom_meta_keys as $meta_key ) {
+			$data                          = get_user_meta( $user_id, $meta_key['key'], true );
+			$meta_data[ $meta_key['key'] ] = sanitize_text_field( $data );
+		}
+
+		wp_nonce_field( 'wholesale_customer_nonce', '_wholesale_customer_nonce' );
 		?>
-		<div class="drd-wholesale-customer-meta-data">
-			<h1>Wholesale Customer Registration</h1>
-			<table>
-				<tbody>
+	<div class="drd-wholesale-customer-meta-data">
+		<h1>Wholesale Customer Registration</h1>
+		<table>
+			<tbody>
+				<?php
+				foreach ( $this->wholesale_customer_custom_meta_keys as $meta_key ) {
+					?>
 					<tr>
-						<th>
-							<label for="seller_permit">Seller's Permit</label>
-						</th>
-						<td>
-							<input
-							name="seller_permit" type="text"
-							id="seller_permit"
-							class="regular-text"
-							value="<?php echo isset( $seller_permit ) ? esc_html( $seller_permit ) : ''; ?>"
-							>
-						</td>
-					</tr>
-					<tr>
-						<th>
-							<label for="practitioner_type">Practitioner Type</label>
-						</th>
-						<td>
-							<input
-							name="practitioner_type" type="text" 
-							id="practitioner_type" 
-							class="regular-text"
-							value="<?php echo isset( $practitioner_type ) ? esc_html( $practitioner_type ) : ''; ?>">
-						</td>
-					</tr>
-					<tr>
-						<th>
-							<label for="title">Title</label>
-						</th>
-						<td>
-							<input
-							name="title"
+					<th>
+						<label for="seller_permit">
+							<?php echo esc_html( $meta_key['label'] ); ?>
+						</label>
+					</th>
+					<td>
+						<?php if ( 'text' === $meta_key['input_type'] ) : ?>
+						<input
+						name="<?php echo esc_html( $meta_key['key'] ); ?>"
+						type="text"
+						id="<?php echo esc_attr( $meta_key['key'] ); ?>"
+						class="regular-text"
+						value="<?php echo isset( $meta_data[ $meta_key['key'] ] ) ? esc_html( $meta_data[ $meta_key['key'] ] ) : ''; ?>">
+							<?php
+						endif;
+						if ( 'textarea' === $meta_key['input_type'] ) :
+							?>
+							<textarea
+							name="<?php echo esc_html( $meta_key['key'] ); ?>"
 							type="text"
-							id="title" 
-							class="regular-text"
-							value="<?php echo isset( $title ) ? esc_html( $title ) : ''; ?>">
-						</td>
+							id="<?php echo esc_attr( $meta_key['key'] ); ?>"
+							class="wholesale-customer-notes"
+							><?php echo isset( $meta_data[ $meta_key['key'] ] ) ? esc_html( $meta_data[ $meta_key['key'] ] ) : ''; ?></textarea>
+							<?php endif; ?>
+					</td>
 					</tr>
-					<tr>
-						<th>
-							<label for="website">Website</label>
-						</th>
-						<td>
-							<input
-							name="website"
-							type="text"
-							id="website"
-							class="regular-text"
-							value="<?php echo isset( $website ) ? esc_html( $website ) : ''; ?>">
-						</td>
-					</tr>
-					<tr>
-						<th>
-							<label for="tell_us_about_your_practice">Tell Us About Your Practice</label>
-						</th>
-						<td>
-							<input
-							name="tell_us_about_your_practice"
-							type="text"
-							id="tell_us_about_your_practice"
-							class="regular-text"
-							value="<?php echo isset( $tell_us_about_your_practice ) ? esc_html( $tell_us_about_your_practice ) : ''; ?>">
-						</td>
-					</tr>
-					<tr>
-						<th>
-							<label for="notes">Notes</label>
-						</th>
-						<td>
-							<input
-							name="notes"
-							type="text"
-							id="notes"
-							class="regular-text"
-							value="<?php echo isset( $notes ) ? esc_html( $notes ) : ''; ?>">
-						</td>
-					</tr>
-					<tr>
-						<th>
-							<label for="notes">Country</label>
-						</th>
-						<td>
-							<input
-							name="country"
-							type="text"
-							id="notes"
-							class="regular-text"
-							value="<?php echo isset( $country ) ? esc_html( $country ) : ''; ?>">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<a href="#" class="button button-primary button-hero yoo">Update Wholesale Customer Data</a>
-		</div>
+							<?php
+				}
+				?>
+				
+			</tbody>
+		</table>
+	</div>
 		<?php
 	}
 
 	/**
-	 * Undocumented function
+	 * Update user meta on "Update User" button click
+	 *
+	 * @param user_id $user_id The user id.
+	 * @return mixed
+	 */
+	public function update_custom_user_meta_on_profile_update( $user_id ) {
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		check_ajax_referer( 'wholesale_customer_nonce', '_wholesale_customer_nonce' );
+
+		foreach ( $this->wholesale_customer_custom_meta_keys as $meta ) {
+			$meta_data = isset( $_POST[ $meta['key'] ] ) ? sanitize_text_field( wp_unslash( $_POST[ $meta['key'] ] ) ) : '';
+			update_user_meta( $user_id, $meta['key'], $meta_data );
+		}
+	}
+
+	/**
+	 * Notify a wholesale customer upon approval of their application.
+	 *
+	 * This function sends an email to the wholesale customer
+	 * informing them that their application has been approved.
+	 *
+	 * @param string $email The user email address.
+	 * @param string $password The user password.
+	 * @return mixed
+	 */
+	public function notify_wholesale_approval( $email, $password ) {
+		$template_path = plugin_dir_path( __DIR__ ) . 'email-templates/wholesale-approval-email.html';
+
+		$email_template = file_get_contents( $template_path );
+
+		if ( ! $email_template ) {
+			return false;
+		}
+
+		$email_body = str_replace(
+			array( '{{EMAIL}}', '{{PASSWORD}}', '{{ACCOUNT_URL}}' ),
+			array( $email, $password, 'https://www.google.com' ),
+			$email_template
+		);
+
+		$subject = 'Wholesale Account Approval';
+		$header  = array(
+			'Content-Type: text/html; charset=UTF-8',
+			'From: My Company name <no-reply@mail.com>',
+		);
+
+		wp_mail( $email, $subject, $email_body, $header );
+	}
+
+	/**
+	 * Delete a wp post
+	 *
+	 * The function deletes wp post using post id.
 	 *
 	 * @return void
 	 */
-	public function yoo() {
-		$user_id = $_POST['user_id'];
+	public function delete_wp_post() {
+		check_ajax_referer( 'my-nonce', 'nonce', true );
 
-		update_user_meta( $user_id, 'seller_permit', 'Jwolt Junaid Hello' );
+		$post_id     = isset( $_POST['post_id'] ) ? absint( sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) ) : null;
+		$redirect_to = isset( $_POST['redirect_to'] ) ? sanitize_text_field( wp_unslash( $_POST['redirect_to'] ) ) : null;
 
-		wp_send_json_success( array( 'message' => 'The user id ' . $user_id ) );
+		$message = array(
+			'message' => __( 'Post deleted successfully.', 'drd' ),
+		);
+
+		if ( 'post-archive' === $redirect_to ) {
+			$message['user_page'] = admin_url( 'edit.php?post_type=wholesale-applicatio' );
+		}
+
+		if ( 'user-page' === $redirect_to ) {
+			$message['user_page'] = admin_url( 'user-edit.php?user_id=' );
+		}
+
+		if ( ! $post_id || ! get_post( $post_id ) ) {
+			wp_send_json_error( __( 'Invalid post ID', 'drd' ) );
+		}
+
+		if ( ! current_user_can( 'delete_post', $post_id ) ) {
+			wp_send_json_error( __( 'You don\'t have', 'drd' ) );
+		}
+
+		$result = wp_delete_post( $post_id, false );
+
+		if ( $result ) {
+			wp_send_json_success( $message );
+		} else {
+			wp_send_json_error( __( 'Failed to delete the post.', 'drd' ) );
+		}
 	}
 }

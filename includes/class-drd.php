@@ -157,12 +157,15 @@ class Drd {
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'meta_box_init' );
 		$this->loader->add_action( 'show_user_profile', $plugin_admin, 'user_meta_html' );
 
-		$this->loader->add_action( 'show_user_profile', $plugin_admin, 'user_meta_html' );
-		$this->loader->add_action( 'edit_user_profile', $plugin_admin, 'user_meta_html' );
-		$this->loader->add_action( 'user_new_form', $plugin_admin, 'user_meta_html' );
+		// Admin page hooks.
+		$this->loader->add_action( 'show_user_profile', $plugin_admin, 'update_custom_user_meta_on_profile_html' );
+		$this->loader->add_action( 'edit_user_profile', $plugin_admin, 'update_custom_user_meta_on_profile_html' );
+		$this->loader->add_action( 'user_new_form', $plugin_admin, 'update_custom_user_meta_on_profile_html' );
 
-		$this->loader->add_action( 'wp_ajax_yoo', $plugin_admin, 'yoo' );
-		$this->loader->add_action( 'wp_ajax_nopriv_yoo', $plugin_admin, 'yoo' );
+		$this->loader->add_action( 'personal_options_update', $plugin_admin, 'update_custom_user_meta_on_profile_update' );
+		$this->loader->add_action( 'edit_user_profile_update', $plugin_admin, 'update_custom_user_meta_on_profile_update' );
+		$this->loader->add_action( 'wp_ajax_delete_wp_post', $plugin_admin, 'delete_wp_post' );
+		$this->loader->add_action( 'wp_ajax__nopriv_delete_wp_post', $plugin_admin, 'delete_wp_post' );
 	}
 
 	/**

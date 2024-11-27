@@ -79,3 +79,4 @@ function run_drd() {
 }
 
 run_drd();
+// phpcs:disable;
