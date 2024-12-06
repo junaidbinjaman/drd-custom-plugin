@@ -152,9 +152,10 @@ class Drd {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'init', $plugin_admin, 'admin_initializer' );
+		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'meta_box_init' );
 		$this->loader->add_action( 'wp_ajax_foobar', $plugin_admin, 'foobar' );
 		$this->loader->add_action( 'wp_ajax__nopriv_foobar', $plugin_admin, 'foobar' );
-		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'meta_box_init' );
 		$this->loader->add_action( 'show_user_profile', $plugin_admin, 'user_meta_html' );
 
 		// Admin page hooks.

@@ -63,6 +63,17 @@ register_deactivation_hook( __FILE__, 'deactivate_drd' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-drd.php';
 
+
+/**
+ * The codestar framework integration.
+ * The code bellow integration the codestar framework
+ */
+require_once plugin_dir_path( __FILE__ ) . 'includes/libraries/codestar-framework/codestar-framework.php';
+
+
+// The file registers a custom meta box for wholesale application post type.
+require_once plugin_dir_path( __FILE__ ) . 'admin/partials/drd-wca-meta.php';
+
 /**
  * Begins execution of the plugin.
  *
@@ -79,4 +90,46 @@ function run_drd() {
 }
 
 run_drd();
-// phpcs:disable;
+// phpcs:disabled
+
+
+// add_action(
+// 	'init',
+// 	function () {
+// 		$meta_data = array(
+// 			'first_name'              => 'John',
+// 			'last_name'               => 'Doe',
+// 			'email'                   => 'john.doe@example.com',
+// 			'phone'                   => '1234567890',
+// 			'billing_country'         => 'USA',
+// 			'billing_address_line_1'  => '123 Main St',
+// 			'billing_address_line_2'  => 'Apt 4B',
+// 			'billing_city'            => 'New York',
+// 			'billing_postal_code'     => '10001',
+// 			'shipping_country'        => 'USA',
+// 			'shipping_address_line_1' => '456 Elm St',
+// 			'shipping_address_line_2' => 'Suite 5A',
+// 			'shipping_city'           => 'Los Angeles',
+// 			'shipping_postal_code'    => '90001',
+// 			'sellers_type'            => 'Retailer',
+// 			'practitioner_type'       => 'Medical',
+// 			'title'                   => 'Doctor',
+// 			'website'                 => 'https://example.com',
+// 			'article'                 => 'I have been practicing for over 10 years.',
+// 			'notes'                   => 'This is a sample note.',
+// 		);
+
+// 		$post_arr = array(
+// 			'post_title'   => 'Wholesale Application Test Post',
+// 			'post_content' => 'This is a test application for wholesale customer.',
+// 			'post_status'  => 'publish',
+// 			'post_type'    => 'wholesaleapplication',
+// 			'post_author'  => get_current_user_id(),
+// 			'meta_input'   => array(
+// 				'wac_meta_fields' => $meta_data,
+// 			),
+// 		);
+
+// 		wp_insert_post( $post_arr );
+// 	}
+// );

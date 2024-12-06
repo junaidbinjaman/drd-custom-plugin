@@ -165,26 +165,32 @@ class Drd_Admin {
 	}
 
 	/**
+	 * The admin initializer
+	 *
+	 * The function bellow initializes the admin functions.
+	 *
+	 * @return void
+	 */
+	public function admin_initializer() {
+		$this->wholesale_customer_application_handler();
+	}
+
+	/**
 	 * The function initializes all the meta boxes on admin screen.
 	 *
 	 * @return void
 	 */
 	public function meta_box_init() {
-		$screens = array( 'post', 'wholesale-applicatio' );
-
-		foreach ( $screens as $screen ) {
-			add_meta_box(
-				'wholesale_customer_reg_action',
-				__( 'Action', 'drd' ),
-				array( $this, 'wholesale_customer_red_action' ),
-				$screen,
-				'side',
-			);
-		}
+		$screens = array( 'post', 'wholesale-applicatio', 'wholesaleapplication' );
 	}
 
 	/**
-	 * Wholesale customer registration actions
+	 * Wholesale customer application data and action
+	 *
+	 * The function display the application data and action buttons
+	 * to either approve or reject the application.
+	 *
+	 * The shortcut wca stands for "Wholesale Customer Application"
 	 *
 	 * @return void
 	 */
@@ -193,6 +199,26 @@ class Drd_Admin {
 		<p>Status: <strong>Pending</strong></p>
 		<a href="#" class="drd-application-approval-btn button button-primary">Approve</a>
 		<a href="#" class="drd-application-rejection-btn button button-primary">Reject</a>
+		<table>
+			<tbody>
+				<tr>
+					<th><label for="wca_first_name">First Name</label></th>
+					<td><input type="text" id="wca_first_name" name="wca_first_name"></td>
+				</tr>
+				<tr>
+					<th><label for="wca_last_name">Last Name</label></th>
+					<td><input type="text" id="wca_last_name" name="wca_last_name"></td>
+				</tr>
+				<tr>
+					<th><label for="wca_email">Email</label></th>
+					<td><input type="text" id="wca_email" name="wca_email"></td>
+				</tr>
+				<tr>
+					<th><label for="wca_phone">phone</label></th>
+					<td><input type="text" id="wca_phone" name="wca_phone"></td>
+				</tr>
+			</tbody>
+		</table>
 		<div class="gggg">
 		<div class="ggg">
 			<span class="loader"></span>
@@ -476,5 +502,68 @@ class Drd_Admin {
 		} else {
 			wp_send_json_error( __( 'Failed to delete the post.', 'drd' ) );
 		}
+	}
+
+	/**
+	 * Wholesale application post type handler
+	 *
+	 * The function handles the wholesale customer application
+	 * custom post type. This post type stores all the applications here.
+	 *
+	 * @return void
+	 */
+	public function wholesale_customer_application_handler() {
+		$labels = array(
+			'name'                  => _x( 'Wholesale Applications', 'Post Type General Name', 'drd' ),
+			'singular_name'         => _x( 'Wholesale Application', 'Post Type Singular Name', 'drd' ),
+			'menu_name'             => _x( 'Wholesale Applications', 'Admin Menu text', 'drd' ),
+			'name_admin_bar'        => _x( 'Wholesale Application', 'Add New on Toolbar', 'drd' ),
+			'archives'              => __( 'Wholesale Application Archives', 'drd' ),
+			'attributes'            => __( 'Wholesale Application Attributes', 'drd' ),
+			'parent_item_colon'     => __( 'Parent Wholesale Application:', 'drd' ),
+			'all_items'             => __( 'All Wholesale Applications', 'drd' ),
+			'add_new_item'          => __( 'Add New Wholesale Application', 'drd' ),
+			'add_new'               => __( 'Add New', 'drd' ),
+			'new_item'              => __( 'New Wholesale Application', 'drd' ),
+			'edit_item'             => __( 'Edit Wholesale Application', 'drd' ),
+			'update_item'           => __( 'Update Wholesale Application', 'drd' ),
+			'view_item'             => __( 'View Wholesale Application', 'drd' ),
+			'view_items'            => __( 'View Wholesale Applications', 'drd' ),
+			'search_items'          => __( 'Search Wholesale Application', 'drd' ),
+			'not_found'             => __( 'Not found', 'drd' ),
+			'not_found_in_trash'    => __( 'Not found in Trash', 'drd' ),
+			'featured_image'        => __( 'Featured Image', 'drd' ),
+			'set_featured_image'    => __( 'Set featured image', 'drd' ),
+			'remove_featured_image' => __( 'Remove featured image', 'drd' ),
+			'use_featured_image'    => __( 'Use as featured image', 'drd' ),
+			'insert_into_item'      => __( 'Insert into Wholesale Application', 'drd' ),
+			'uploaded_to_this_item' => __( 'Uploaded to this Wholesale Application', 'drd' ),
+			'items_list'            => __( 'Wholesale Applications list', 'drd' ),
+			'items_list_navigation' => __( 'Wholesale Applications list navigation', 'drd' ),
+			'filter_items_list'     => __( 'Filter Wholesale Applications list', 'drd' ),
+		);
+		$args   = array(
+			'label'               => __( 'Wholesale Application', 'drd' ),
+			'description'         => __( 'The wholesale customer registration application', 'drd' ),
+			'labels'              => $labels,
+			'menu_icon'           => 'dashicons-archive',
+			'supports'            => array( 'title' ),
+			'taxonomies'          => array(),
+			'public'              => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'menu_position'       => 5,
+			'show_in_admin_bar'   => false,
+			'show_in_nav_menus'   => true,
+			'can_export'          => true,
+			'has_archive'         => false,
+			'hierarchical'        => true,
+			'exclude_from_search' => true,
+			'show_in_rest'        => true,
+			'publicly_queryable'  => true,
+			'capability_type'     => 'page',
+		);
+
+		register_post_type( 'wholesaleapplication', $args );
 	}
 }
