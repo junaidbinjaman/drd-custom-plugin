@@ -12,6 +12,11 @@
  * @subpackage Drd/includes
  */
 
+// Include the Composer autoloader if it exists.
+if ( file_exists( plugin_dir_path( __FILE__ ) . '../vendor/autoload.php' ) ) {
+	require plugin_dir_path( __FILE__ ) . '../vendor/autoload.php';
+}
+
 /**
  * The core plugin class.
  *

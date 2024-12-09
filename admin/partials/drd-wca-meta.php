@@ -14,6 +14,10 @@
  * @subpackage Drd/admin/drd-wac-meta.php
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Control core classes for avoid errors.
 if ( class_exists( 'CSF' ) ) {
 

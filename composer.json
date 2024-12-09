@@ -18,5 +18,8 @@
     },
     "require-dev": {
         "wp-coding-standards/wpcs": "^3.0"
+    },
+    "require": {
+        "monolog/monolog": "^3.8"
     }
 }

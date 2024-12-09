@@ -74,6 +74,9 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/libraries/codestar-framewor
 // The file registers a custom meta box for wholesale application post type.
 require_once plugin_dir_path( __FILE__ ) . 'admin/partials/drd-wca-meta.php';
 
+// Monolog handler class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-drd-logger.php';
+
 /**
  * Begins execution of the plugin.
  *
@@ -133,3 +136,11 @@ run_drd();
 // 		wp_insert_post( $post_arr );
 // 	}
 // );
+
+function add_new_sendy_form_action( $form_actions_registrar ) {
+	include_once( __DIR__ . '/admin/partials/elementor-form-actions/insert-new-post-action.php' );
+
+	$form_actions_registrar->register( new New_Post_Action_After_Submit() );
+}
+
+add_action( 'elementor_pro/forms/actions/register', 'add_new_sendy_form_action' );
