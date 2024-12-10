@@ -1,9 +1,9 @@
 <?php
 /**
- * Elementor form custom action that insert a new post onn successful submission.
+ * Elementor form custom action that insert a new post on successful submission.
  *
- * The codes in this file creates a new custom action
- * for elementor form. The action insert a new post on successful form submission.
+ * The codes in this file creates a new custom action for elementor form.
+ * The action insert a new post on successful form submission.
  *
  * @link https://junaidbinjaman.com
  * @since 1.0.0
@@ -15,7 +15,7 @@
 /**
  * Elementor form New Post action.
  *
- * Custom Elementor form action which adds new subscriber to Sendy after form submission.
+ * Custom Elementor form action which insert a new post on the successful submission.
  *
  * @since 1.0.0
  */
@@ -61,18 +61,18 @@ class New_Post_Action_After_Submit extends \ElementorPro\Modules\Forms\Classes\A
 		$widget->start_controls_section(
 			'section_dynamic_fields',
 			array(
-				'label'     => esc_html__( 'Dynamic Meta Fields', 'elementor-custom-action' ),
+				'label'     => esc_html__( 'Dynamic Meta Fields', 'drd' ),
 				'condition' => array(
 					'submit_actions' => $this->get_name(),
 				),
 			)
 		);
 
-		// Dropdown for selecting post type
+		// Select the custom post type.
 		$widget->add_control(
 			'selected_post_type',
 			array(
-				'label'   => esc_html__( 'Select Post Type', 'elementor-custom-action' ),
+				'label'   => esc_html__( 'Select Post Type', 'drd' ),
 				'type'    => \Elementor\Controls_Manager::SELECT,
 				'options' => get_post_types( null, 'names' ),
 			)

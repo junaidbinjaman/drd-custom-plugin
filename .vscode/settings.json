@@ -1,39 +1,51 @@
 {
+    // Spell checker
     "cSpell.words": [
-      "absint",
-      "ABSPATH",
-      "applicatio",
-      "atts",
-      "Banasree",
-      "dashicons",
-      "elementor",
-      "ersome",
-      "Jaman",
-      "Junaid",
-      "jwolt",
-      "metabox",
-      "nicename",
-      "nopriv",
-      "phpcs",
-      "Rego",
-      "shortcode",
-      "subpackage",
-      "unslash",
-      "wholesaleapplication",
-      "WPINC"
+        "absint",
+        "ABSPATH",
+        "applicatio",
+        "atts",
+        "Banasree",
+        "dashicons",
+        "elementor",
+        "ersome",
+        "Jaman",
+        "Junaid",
+        "jwolt",
+        "metabox",
+        "nicename",
+        "nopriv",
+        "phpcs",
+        "Rego",
+        "shortcode",
+        "subpackage",
+        "unslash",
+        "wholesaleapplication",
+        "WPINC",
     ],
 
-  // Place your settings in this file to overwrite the default settings
-  // PHPCS
-  "phpcs.enable": true,
-  "phpcs.standard": "WordPress",
-  "phpcs.executablePath": "./vendor/bin/phpcs",
-  "phpcs.composerJsonPath": "composer.json",
+    // Place your settings in this file to overwrite the default settings
+    // PHPCS
+    "phpcs.enable": true,
+    "phpcs.standard": "WordPress",
+    "phpcs.executablePath": "./vendor/bin/phpcs",
+    "phpcs.composerJsonPath": "composer.json",
 
+    "phpcbf.enable": true,
+    "phpcbf.executablePath": "./vendor/bin/phpcbf",
+    "phpcbf.documentFormattingProvider": true,
+    "phpcbf.onsave": false,
+    "phpcbf.standard": "WordPress",
 
-  "phpcbf.enable": true,
-  "phpcbf.executablePath": "./vendor/bin/phpcbf",
-  "phpcbf.documentFormattingProvider": true,
-  "phpcbf.onsave": false,
-  "phpcbf.standard": "WordPress",
+    // PHP intelephense settings
+    "intelephense.environment.phpVersion": "8.0",
+    "intelephense.files.exclude": ["**/vendor/**", "**/node_modules/**"],
+    "intelephense.telemetry.enabled": false,
+    "intelephense.files.maxSize": 1000000, // Equivalent to 1 MB
+    "intelephense.environment.includePaths": [
+        "/Users/junaidbinjaman/Documents/drd-site/app/public/wp-includes",
+        "/Users/junaidbinjaman/Documents/drd-site/app/public/wp-admin",
+        "/Users/junaidbinjaman/Documents/drd-site/app/public/wp-content"
+    ],
+    "intelephense.stubs": ["wordpress", "core", "pdo", "json", "mysqli"]
 }
