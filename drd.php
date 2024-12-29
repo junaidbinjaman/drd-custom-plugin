@@ -93,140 +93,116 @@ function run_drd() {
 }
 
 run_drd();
-// phpcs:disabled
 
+add_filter(
+	'woocommerce_product_tabs',
+	function ( $tabs ) {
+		$post_id         = get_the_ID();
+		$ingredient      = get_post_meta( $post_id, 'ingredients', true );
+		$directions      = get_post_meta( $post_id, 'directions', true );
+		$additional_info = get_post_meta( $post_id, '_additional_information', true );
 
-// add_action(
-// 	'init',
-// 	function () {
-// 		$meta_data = array(
-// 			'first_name'              => 'John',
-// 			'last_name'               => 'Doe',
-// 			'email'                   => 'john.doe@example.com',
-// 			'phone'                   => '1234567890',
-// 			'billing_country'         => 'USA',
-// 			'billing_address_line_1'  => '123 Main St',
-// 			'billing_address_line_2'  => 'Apt 4B',
-// 			'billing_city'            => 'New York',
-// 			'billing_postal_code'     => '10001',
-// 			'shipping_country'        => 'USA',
-// 			'shipping_address_line_1' => '456 Elm St',
-// 			'shipping_address_line_2' => 'Suite 5A',
-// 			'shipping_city'           => 'Los Angeles',
-// 			'shipping_postal_code'    => '90001',
-// 			'sellers_type'            => 'Retailer',
-// 			'practitioner_type'       => 'Medical',
-// 			'title'                   => 'Doctor',
-// 			'website'                 => 'https://example.com',
-// 			'article'                 => 'I have been practicing for over 10 years.',
-// 			'notes'                   => 'This is a sample note.',
-// 		);
+		if ( isset( $ingredient ) && ! empty( $ingredient ) ) {
+			$tabs['ingredients'] = array(
+				'title'    => __( 'Ingredients', 'drd' ),
+				'priority' => 50,
+				'callback' => 'custom_tab_ingredient_content',
+			);
+		}
 
-// 		$post_arr = array(
-// 			'post_title'   => 'Wholesale Application Test Post',
-// 			'post_content' => 'This is a test application for wholesale customer.',
-// 			'post_status'  => 'publish',
-// 			'post_type'    => 'wholesaleapplication',
-// 			'post_author'  => get_current_user_id(),
-// 			'meta_input'   => array(
-// 				'wac_meta_fields' => $meta_data,
-// 			),
-// 		);
+		if ( isset( $directions ) && ! empty( $directions ) ) {
+			$tabs['direction'] = array(
+				'title'    => __( 'DIrection', 'drd' ),
+				'priority' => 51,
+				'callback' => 'custom_tab_directions_content',
+			);
+		}
 
-// 		wp_insert_post( $post_arr );
-// 	}
-// );
+		if ( isset( $additional_info ) && ! empty( $additional_info ) ) {
+			$tabs['_additional_information'] = array(
+				'title'    => __( 'Additional Information', 'drd' ),
+				'priority' => 52,
+				'callback' => 'custom_tab_additional_info_content',
+			);
+		}
 
-// function add_new_sendy_form_action( $form_actions_registrar ) {
-// 	include_once( __DIR__ . '/admin/partials/elementor-form-actions/insert-new-post-action.php' );
+		unset( $tabs['additional_information'] );
 
-// 	$form_actions_registrar->register( new New_Post_Action_After_Submit() );
-// }
-
-// add_action( 'elementor_pro/forms/actions/register', 'add_new_sendy_form_action' );
-
-add_filter('woocommerce_product_tabs', function($tabs) {
-	$post_id = get_the_ID();
-	$ingredient = get_post_meta( $post_id, 'ingredients', true );
-	$directions = get_post_meta( $post_id, 'directions', true );
-	$additional_info = get_post_meta( $post_id, '_additional_information', true );
-
-	if (isset( $ingredient ) && ! empty($ingredient)) {
-		$tabs['ingredients'] = array(
-			'title' => __( 'Ingredients', 'drd' ),
-			'priority' => 50,
-			'callback' => 'custom_tab_ingredient_content'
-		);
+		return $tabs;
 	}
+);
 
-	if (isset( $directions ) && ! empty($directions)) {
-		$tabs['direction'] = array(
-			'title' => __( 'DIrection', 'drd' ),
-			'priority' => 51,
-			'callback' => 'custom_tab_directions_content'
-		);
-	}
-
-	if (isset( $additional_info ) && ! empty($additional_info)) {
-		$tabs['_additional_information'] = array(
-			'title' => __( 'Additional Information', 'drd' ),
-			'priority' => 52,
-			'callback' => 'custom_tab_additional_info_content'
-		);
-	}
-
-	unset($tabs['additional_information']);
-
-	return $tabs;
-});
-
+/**
+ * Ingredient tab content.
+ *
+ * @return void
+ */
 function custom_tab_ingredient_content() {
 	$post_id = get_the_ID();
 
 	$value = get_post_meta( $post_id, 'ingredients', true );
 
-	echo wp_kses( $value, array(
-		'ul' => array(),
-		'li' => array(),
-		'strong' => array(),
-		'hr' => array(),
-		'h3' => array(),
-		'h2' => array(),
-		'h1' => array(),
-		'p1' => array(),
-	) );
+	echo wp_kses(
+		$value,
+		array(
+			'ul'     => array(),
+			'li'     => array(),
+			'strong' => array(),
+			'hr'     => array(),
+			'h3'     => array(),
+			'h2'     => array(),
+			'h1'     => array(),
+			'p1'     => array(),
+		)
+	);
 }
 
+/**
+ * Direction tab content
+ *
+ * @return void
+ */
 function custom_tab_directions_content() {
 	$post_id = get_the_ID();
 
 	$value = get_post_meta( $post_id, 'directions', true );
 
-	echo wp_kses( $value, array(
-		'ul' => array(),
-		'li' => array(),
-		'strong' => array(),
-		'hr' => array(),
-		'h3' => array(),
-		'h2' => array(),
-		'h1' => array(),
-		'p1' => array(),
-	) );
+	echo wp_kses(
+		$value,
+		array(
+			'ul'     => array(),
+			'li'     => array(),
+			'strong' => array(),
+			'hr'     => array(),
+			'h3'     => array(),
+			'h2'     => array(),
+			'h1'     => array(),
+			'p1'     => array(),
+		)
+	);
 }
 
+/**
+ * Additional Info tab content
+ *
+ * @return void
+ */
 function custom_tab_additional_info_content() {
 	$post_id = get_the_ID();
 
 	$value = get_post_meta( $post_id, '_additional_information', true );
 
-	echo wp_kses( $value, array(
-		'ul' => array(),
-		'li' => array(),
-		'strong' => array(),
-		'hr' => array(),
-		'h3' => array(),
-		'h2' => array(),
-		'h1' => array(),
-		'p1' => array(),
-	) );
+	echo wp_kses(
+		$value,
+		array(
+			'ul'     => array(),
+			'li'     => array(),
+			'strong' => array(),
+			'hr'     => array(),
+			'h3'     => array(),
+			'h2'     => array(),
+			'h1'     => array(),
+			'p1'     => array(),
+		)
+	);
 }
