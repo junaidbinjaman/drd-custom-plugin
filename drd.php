@@ -189,7 +189,11 @@ function custom_tab_ingredient_content() {
 		'ul' => array(),
 		'li' => array(),
 		'strong' => array(),
-		'hr' => array()
+		'hr' => array(),
+		'h3' => array(),
+		'h2' => array(),
+		'h1' => array(),
+		'p1' => array(),
 	) );
 }
 
@@ -198,7 +202,16 @@ function custom_tab_directions_content() {
 
 	$value = get_post_meta( $post_id, 'directions', true );
 
-	echo esc_html( $value );
+	echo wp_kses( $value, array(
+		'ul' => array(),
+		'li' => array(),
+		'strong' => array(),
+		'hr' => array(),
+		'h3' => array(),
+		'h2' => array(),
+		'h1' => array(),
+		'p1' => array(),
+	) );
 }
 
 function custom_tab_additional_info_content() {
@@ -206,5 +219,14 @@ function custom_tab_additional_info_content() {
 
 	$value = get_post_meta( $post_id, '_additional_information', true );
 
-	echo esc_html( $value );
+	echo wp_kses( $value, array(
+		'ul' => array(),
+		'li' => array(),
+		'strong' => array(),
+		'hr' => array(),
+		'h3' => array(),
+		'h2' => array(),
+		'h1' => array(),
+		'p1' => array(),
+	) );
 }
