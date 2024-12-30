@@ -137,10 +137,74 @@ run_drd();
 // 	}
 // );
 
-function add_new_sendy_form_action( $form_actions_registrar ) {
-	include_once( __DIR__ . '/admin/partials/elementor-form-actions/insert-new-post-action.php' );
+// function add_new_sendy_form_action( $form_actions_registrar ) {
+// 	include_once( __DIR__ . '/admin/partials/elementor-form-actions/insert-new-post-action.php' );
 
-	$form_actions_registrar->register( new New_Post_Action_After_Submit() );
+// 	$form_actions_registrar->register( new New_Post_Action_After_Submit() );
+// }
+
+// add_action( 'elementor_pro/forms/actions/register', 'add_new_sendy_form_action' );
+
+add_filter('woocommerce_product_tabs', function($tabs) {
+	$post_id = get_the_ID();
+	$ingredient = get_post_meta( $post_id, 'ingredients', true );
+	$directions = get_post_meta( $post_id, 'directions', true );
+	$additional_info = get_post_meta( $post_id, '_additional_information', true );
+
+	if (isset( $ingredient ) && ! empty($ingredient)) {
+		$tabs['ingredients'] = array(
+			'title' => __( 'Ingredients', 'drd' ),
+			'priority' => 50,
+			'callback' => 'custom_tab_ingredient_content'
+		);
+	}
+
+	if (isset( $directions ) && ! empty($directions)) {
+		$tabs['direction'] = array(
+			'title' => __( 'DIrection', 'drd' ),
+			'priority' => 51,
+			'callback' => 'custom_tab_directions_content'
+		);
+	}
+
+	if (isset( $additional_info ) && ! empty($additional_info)) {
+		$tabs['_additional_information'] = array(
+			'title' => __( 'Additional Information', 'drd' ),
+			'priority' => 52,
+			'callback' => 'custom_tab_additional_info_content'
+		);
+	}
+
+	unset($tabs['additional_information']);
+
+	return $tabs;
+});
+
+function custom_tab_ingredient_content() {
+	$post_id = get_the_ID();
+
+	$value = get_post_meta( $post_id, 'ingredients', true );
+
+	echo wp_kses( $value, array(
+		'ul' => array(),
+		'li' => array(),
+		'strong' => array(),
+		'hr' => array()
+	) );
 }
 
-add_action( 'elementor_pro/forms/actions/register', 'add_new_sendy_form_action' );
+function custom_tab_directions_content() {
+	$post_id = get_the_ID();
+
+	$value = get_post_meta( $post_id, 'directions', true );
+
+	echo esc_html( $value );
+}
+
+function custom_tab_additional_info_content() {
+	$post_id = get_the_ID();
+
+	$value = get_post_meta( $post_id, '_additional_information', true );
+
+	echo esc_html( $value );
+}

@@ -12,6 +12,7 @@
         "Jaman",
         "Junaid",
         "jwolt",
+        "kses",
         "metabox",
         "nicename",
         "nopriv",
@@ -21,7 +22,8 @@
         "subpackage",
         "unslash",
         "wholesaleapplication",
-        "WPINC",
+        "woocommerce",
+        "WPINC"
     ],
 
     // Place your settings in this file to overwrite the default settings
