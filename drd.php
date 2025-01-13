@@ -112,7 +112,7 @@ add_filter(
 
 		if ( isset( $directions ) && ! empty( $directions ) ) {
 			$tabs['direction'] = array(
-				'title'    => __( 'DIrection', 'drd' ),
+				'title'    => __( 'Direction', 'drd' ),
 				'priority' => 51,
 				'callback' => 'custom_tab_directions_content',
 			);
